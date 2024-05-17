@@ -1,4 +1,5 @@
-# Geektime Rust 语言训练营
+handle-csv
+Rust CLI is a tool to handle CSV files.
 
 ## 环境设置
 
