@@ -1,4 +1,4 @@
-handle-csv
+handlecsv
 Rust CLI is a tool to handle CSV files.
 
 ## 环境设置
