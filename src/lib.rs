@@ -1,5 +1,5 @@
 mod options;
 mod process;
 
-pub use options::{Options, SubCommand};
-pub use process::process_csv;
+pub use options::{GeneratePasswordOptions, Options, SubCommand};
+pub use process::{generate_password, process_csv};

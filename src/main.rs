@@ -1,5 +1,5 @@
 use clap::Parser;
-use csvtools::{process_csv, Options, SubCommand};
+use csvtools::{generate_password, process_csv, Options, SubCommand};
 
 fn main() -> anyhow::Result<()> {
     let options = Options::parse();
@@ -11,6 +11,15 @@ fn main() -> anyhow::Result<()> {
                 format!("output.{}", options.format)
             };
             process_csv(&options.input, output, options.format)?;
+        }
+        SubCommand::GeneratePassword(options) => {
+            generate_password(
+                options.length,
+                options.uppercase,
+                options.lowercase,
+                options.digits,
+                options.special,
+            )?;
         }
     }
     Ok(())
