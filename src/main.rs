@@ -1,5 +1,8 @@
 use clap::Parser;
-use csvtools::{generate_password, process_csv, Options, SubCommand};
+use cli_tools::{
+    generate_password, process_csv, process_decode, process_encode, Base64Options, Options,
+    SubCommand,
+};
 
 fn main() -> anyhow::Result<()> {
     let options = Options::parse();
@@ -21,6 +24,14 @@ fn main() -> anyhow::Result<()> {
                 options.special,
             )?;
         }
+        SubCommand::Base64(options) => match options {
+            Base64Options::Encode(options) => {
+                process_encode(&options.input, options.format)?;
+            }
+            Base64Options::Decode(options) => {
+                process_decode(&options.input, options.format)?;
+            }
+        },
     }
     Ok(())
 }

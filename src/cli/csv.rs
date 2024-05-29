@@ -1,20 +1,6 @@
+use super::verify_input_file;
 use clap::Parser;
-use std::{fmt, path::Path, str::FromStr};
-
-#[derive(Debug, Parser)]
-#[command(name="csvtool", version, author, about, long_about = None)]
-pub struct Options {
-    #[command(subcommand)]
-    pub cmd: SubCommand,
-}
-
-#[derive(Debug, Parser)]
-pub enum SubCommand {
-    #[command(name = "csv", about = "Show CSV, or Convert CSV to other formats")]
-    Csv(CsvOptions),
-    #[command(name = "generatePassword", about = "Generate password")]
-    GeneratePassword(GeneratePasswordOptions),
-}
+use std::{fmt, str::FromStr};
 
 #[derive(Debug, Clone, Copy)]
 pub enum OutputFormat {
@@ -24,7 +10,7 @@ pub enum OutputFormat {
 
 #[derive(Debug, Parser)]
 pub struct CsvOptions {
-    #[arg(short, long = "input", value_parser=verify_input_file)]
+    #[arg(short, long = "input", value_parser = verify_input_file)]
     pub input: String,
     #[arg(short, long = "output")]
     pub output: Option<String>,
@@ -34,28 +20,6 @@ pub struct CsvOptions {
     pub delimiter: char,
     #[arg(long = "header", default_value_t = true)]
     pub header: bool,
-}
-
-#[derive(Debug, Parser)]
-pub struct GeneratePasswordOptions {
-    #[arg(short, long = "length", default_value_t = 16)]
-    pub length: u8,
-    #[arg(long = "uppercase", default_value_t = true)]
-    pub uppercase: bool,
-    #[arg(long = "lowercase", default_value_t = true)]
-    pub lowercase: bool,
-    #[arg(long = "digits", default_value_t = true)]
-    pub digits: bool,
-    #[arg(long = "special", default_value_t = true)]
-    pub special: bool,
-}
-
-fn verify_input_file(filename: &str) -> Result<String, String> {
-    if Path::new(filename).exists() {
-        Ok(filename.to_string())
-    } else {
-        Err(format!("File not found: {}", filename))
-    }
 }
 
 fn parse_format(format: &str) -> Result<OutputFormat, anyhow::Error> {

@@ -1,5 +1,7 @@
-mod csv_convert;
-mod generate_password;
+mod base64_process;
+mod csv_process;
+mod genpass_process;
 
-pub use csv_convert::process_csv;
-pub use generate_password::generate_password;
+pub use base64_process::{process_decode, process_encode};
+pub use csv_process::process_csv;
+pub use genpass_process::generate_password;

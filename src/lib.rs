@@ -1,5 +1,5 @@
-mod options;
+mod cli;
 mod process;
 
-pub use options::{GeneratePasswordOptions, Options, SubCommand};
-pub use process::{generate_password, process_csv};
+pub use cli::{Base64Format, Base64Options, Options, SubCommand};
+pub use process::{generate_password, process_csv, process_decode, process_encode};
