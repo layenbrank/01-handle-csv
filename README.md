@@ -84,5 +84,6 @@ cargo install cargo-nextest --locked
 
 clitools execute command
 ```bash
-cargo run --  csv --input test.json --output output.json
+cargo run --  csv --input test.csv --output output --fotmat json
+cargo run --  csv --input test.csv --output output --fotmat yaml
 ```
