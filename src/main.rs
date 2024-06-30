@@ -11,7 +11,14 @@ fn main() -> anyhow::Result<()> {
     match opts.cmd {
         // 如果子命令是 Csv，则调用 process_csv 函数处理 CSV 文件。
         // 注意：&opts.input 和 &opts.output 是引用类型，传递给 process_csv 函数。
-        Subcommand::Csv(opts) => process_csv(&opts.input, &opts.output)?,
+        Subcommand::Csv(opts) => {
+            let output = if let Some(output) = &opts.output {
+                output.clone()
+            } else {
+                format!("output.{}", opts.format)
+            };
+            process_csv(&opts.input, output, opts.format)?;
+        }
     }
     // 返回 Ok(()) 表示程序成功执行完毕。
     Ok(())
