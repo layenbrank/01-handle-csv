@@ -4,6 +4,7 @@ use anyhow::Result;
 use csv::Reader;
 // 用于序列化和反序列化的特性
 use serde::{Deserialize, Serialize};
+// JSON 值类型
 use serde_json::Value;
 // 提供文件系统相关的功能
 use std::fs;
@@ -26,40 +27,38 @@ struct Record {
     kit: u8,
 }
 
+// 处理 CSV 文件并将数据转换为指定格式的函数
 pub fn process_csv(input: &str, output: String, format: Format) -> Result<()> {
-    /* 创建 CSV 文件的 Reader 实例
-    ? 操作符用于错误传播 */
+    // 创建 CSV 文件的 Reader 实例，并传播可能产生的错误
     let mut reader = Reader::from_path(input)?;
 
     /* 初始化一个向量，用于存储处理后的 Record 结构体
     预分配内存以提高性能 */
     let mut results = Vec::with_capacity(128);
 
+    // 获取 CSV 文件的表头
     let headers = reader.headers()?.clone();
 
     // 遍历 CSV 文件中的每一行数据
     for result in reader.records() {
-        /* 将每一行数据反序列化为 Record 结构体
-        ? 操作符用于错误传播 */
+        // 反序列化每一行数据为 Record 结构体，并传播可能产生的错误
         let record = result?;
 
-        // 使用 headers 的迭代器和 record 的迭代器进行 zip
-        // zip 操作符返回一个迭代器，该迭代器包含两个输入迭代器的当前元素
-        // 并将它们组合成一个元组 [(header, record)...]
-        // 使用 collect 方法将 zip 操作符的结果收集到一个 Vec<(String, String)> 类型的向量中 将元素转换为 json
+        // 将 Record 结构体转换为 JSON 格式，这里使用 headers 和 record 的迭代器进行 zip 操作
+        // zip 操作符返回一个迭代器，该迭代器包含两个输入迭代器的当前元素，并将它们组合成一个元组 [(header, value)...]
+        // 使用 collect 方法将 zip 操作符的结果收集到一个 Value 类型的值中
         let json = headers.iter().zip(record.iter()).collect::<Value>();
-        // 将 Record 结构体添加到结果向量中
+        // 将转换后的 JSON 数据添加到结果向量中
         results.push(json);
     }
 
-    // 将结果向量序列化为 JSON YAML 或 TOML 格式的字符串
+    // 根据指定的格式将结果向量序列化为相应的字符串
     let content = match format {
         Format::Json => serde_json::to_string_pretty(&results)?,
         Format::Yaml => serde_yaml::to_string(&results)?,
     };
 
-    /* 将 JSON YAML 或 TOML 格式的数据写入到输出文件中
-    ? 操作符用于错误传播 */
+    // 将序列化后的数据写入到输出文件中，并传播可能产生的错误
     fs::write(output, content)?;
 
     // 函数成功执行后返回 Ok(())
